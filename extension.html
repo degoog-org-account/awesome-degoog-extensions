@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Extension &mdash; Awesome degoog extensions</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("ade:theme");
+          if (t !== "light" && t !== "dark") {
+            t = window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="assets/libraries/bulma.min.css" />
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <body data-page="extension">
+    <section class="hero is-small">
+      <div class="hero-body">
+        <div class="container">
+          <p id="ade-crumbs" class="mb-3">
+            <a
+              href="index.html"
+              class="has-text-grey is-flex is-align-items-center"
+              style="gap: 8px"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M19 12H5M12 19l-7-7 7-7"></path>
+              </svg>
+              All stores
+            </a>
+          </p>
+          <div id="ade-ext-head" aria-busy="true">
+            <p class="ade-skeleton-line" style="width: 60%; height: 32px"></p>
+            <p class="ade-skeleton-line ade-skeleton-line-short"></p>
+            <p class="ade-skeleton-line"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <main class="section">
+      <div class="container">
+        <section id="ade-screenshots" aria-label="Screenshots" hidden></section>
+        <section
+          id="ade-readme"
+          class="ade-readme content mt-5"
+          aria-label="README"
+          hidden
+        ></section>
+        <p id="ade-no-readme" class="has-text-grey mt-5" hidden>
+          No <code>README.md</code> for this extension.
+        </p>
+        <div
+          id="ade-error"
+          class="notification is-danger is-light"
+          hidden
+        ></div>
+      </div>
+    </main>
+    <dialog id="ade-lightbox" class="ade-lightbox">
+      <button type="button" class="ade-lightbox-close" aria-label="Close">
+        &times;
+      </button>
+      <img alt="" />
+    </dialog>
+    <script src="assets/libraries/marked.min.js"></script>
+    <script type="module" src="assets/js/main.js"></script>
+  </body>
+</html>

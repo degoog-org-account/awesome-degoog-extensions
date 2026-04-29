@@ -1,0 +1,14 @@
+services:
+  awesome-degoog-extensions:
+    build: .
+    image: awesome-degoog-extensions:latest
+    container_name: awesome-degoog-extensions
+    restart: unless-stopped
+    ports:
+      - "55444:80"
+    volumes:
+      - ./stores.json:/usr/share/nginx/html/stores.json:ro
+      - ./index.html:/usr/share/nginx/html/index.html:ro
+      - ./store.html:/usr/share/nginx/html/store.html:ro
+      - ./extension.html:/usr/share/nginx/html/extension.html:ro
+      - ./assets:/usr/share/nginx/html/assets:ro
