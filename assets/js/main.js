@@ -33,7 +33,7 @@ async function _renderWelcome() {
   el.innerHTML = tmpl(tpl, {});
   try {
     const r = await fetch(
-      "https://raw.githubusercontent.com/fccview/awesome-degoog-extensions/main/README.md",
+      "https://raw.githubusercontent.com/degoog-org/awesome-degoog-extensions/main/README.md",
     );
     if (!r.ok) return;
     const md = await r.text();
