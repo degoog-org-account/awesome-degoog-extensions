@@ -19,6 +19,12 @@
   width: 100%;
 }
 
+.ade-mobile-title-container {
+  display: flex;
+  align-items: center;
+  gap: var(--ade-space-10);
+}
+
 .ade-mobile-title {
   font-size: var(--ade-font-13);
   font-weight: 600;
