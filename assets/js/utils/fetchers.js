@@ -12,7 +12,7 @@ const _flattenJsdelivr = (node, prefix, out) => {
 };
 
 const _jsdelivrTree = async (path) => {
-  const refs = ["latest", "main", "master"];
+  const refs = ["main", "master"];
   for (const ref of refs) {
     try {
       const r = await fetch(

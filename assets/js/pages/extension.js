@@ -3,53 +3,8 @@ import { parseUrl } from "../utils/url.js";
 import { loadStore, fetchJSON, fetchText, rawUrl, sourceUrl } from "../utils/api.js";
 import { findItem, findScreenshots } from "../utils/items.js";
 import { renderMarkdown } from "../ui/markdown.js";
-import { initSlider, wireLightbox } from "../ui/slider.js";
-
-const _renderCrumbs = (crumbs, loc, data, item, extPath) => {
-  crumbs.innerHTML =
-    '<div class="is-flex is-align-items-center" style="gap: 8px">' +
-    '<a class="has-text-grey is-flex is-align-items-center" style="gap: 8px" href="index.html"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>All stores</a> &rsaquo; ' +
-    '<a class="has-text-grey" href="store.html?repo=' +
-    encodeURIComponent(loc.input) +
-    '">' +
-    escape(data.pkg.name || loc.path) +
-    "</a> &rsaquo; <span>" +
-    escape(item.name || extPath) +
-    "</span>" +
-    "</div>";
-};
-
-const _renderHead = (head, loc, tree, item, extPath, author) => {
-  const depsHtml =
-    Array.isArray(item.dependencies) && item.dependencies.length
-      ? '<p class="mt-3 has-text-grey is-size-7">Dependencies: ' +
-      item.dependencies
-        .map((d) => "<code>" + escape(d) + "</code>")
-        .join(", ") +
-      "</p>"
-      : "";
-  head.innerHTML =
-    '<h1 class="title is-3 mb-2">' +
-    escape(item.name || extPath) +
-    "</h1>" +
-    '<p class="subtitle is-6 has-text-grey mb-2">' +
-    typeTag(item._kind) +
-    (item.type
-      ? ' <span class="tag is-light">' + escape(item.type) + "</span>"
-      : "") +
-    (item.version
-      ? ' <span class="tag is-rounded">v' + escape(item.version) + "</span>"
-      : "") +
-    (author ? " &middot; " + authorMarkup(author) : "") +
-    "</p>" +
-    '<p class="content mb-0">' +
-    escape(item.description || "") +
-    "</p>" +
-    '<p class="is-size-7 mt-2"><a target="_blank" rel="noopener" href="' +
-    escape(sourceUrl(loc, tree, extPath)) +
-    '">View source &rarr;</a></p>' +
-    depsHtml;
-};
+import { initSlider } from "../ui/slider.js";
+import { tmpl, loadTmpl } from "../utils/tmpl.js";
 
 const _resolveReadmePath = (treePaths, extPath) => {
   const candidates = [
@@ -60,8 +15,97 @@ const _resolveReadmePath = (treePaths, extPath) => {
   return candidates.find((p) => hasFile(treePaths, p)) || null;
 };
 
-const _renderReadme = async (readme, noReadme, data, loc, extPath) => {
-  const readmePath = _resolveReadmePath(data.tree.paths, extPath);
+const _resolveAuthor = async (data, loc, extPath) => {
+  const authorPath = extPath + "/author.json";
+  if (!hasFile(data.tree.paths, authorPath)) return data.pkg.author;
+  const override = await fetchJSON(loc, data.tree, authorPath);
+  return override || data.pkg.author;
+};
+
+export async function renderExtensionView(containerEl, repoInput, extPath) {
+  containerEl.innerHTML = "<p>Loading...</p>";
+  const loc = await parseUrl(repoInput);
+  const cleanPath = (extPath || "").replace(/^\/+|\/+$/g, "");
+  const errorTpl = await loadTmpl("common/error.html");
+  if (!loc || !cleanPath) {
+    containerEl.innerHTML = tmpl(errorTpl, {
+      message: "Missing or invalid repo and ext parameters.",
+    });
+    return;
+  }
+  const data = await loadStore(loc);
+  if (!data) {
+    containerEl.innerHTML = tmpl(errorTpl, {
+      message: "Could not load store " + escape(loc.displayUrl) + ".",
+    });
+    return;
+  }
+  const item = findItem(data.pkg, cleanPath);
+  if (!item) {
+    containerEl.innerHTML = tmpl(errorTpl, {
+      message:
+        "Extension " +
+        escape(cleanPath) +
+        " not found in package.json.",
+    });
+    return;
+  }
+  document.title = (item.name || cleanPath) + " — Awesome degoog extensions";
+
+  const storeHref =
+    "#repo=" + encodeURIComponent(repoInput);
+  const crumbsTpl = await loadTmpl("extension/crumbs.html");
+  const crumbsHtml = tmpl(crumbsTpl, {
+    storeHref: escape(storeHref),
+    storeName: escape(data.pkg.name || loc.path),
+    extName: escape(item.name || cleanPath),
+  });
+
+  const author = await _resolveAuthor(data, loc, cleanPath);
+  const versionTagHtml = item.version
+    ? tmpl(await loadTmpl("common/version-tag.html"), { version: escape("v" + item.version) })
+    : "";
+  const authorHtml = author ? " &middot; " + authorMarkup(author) : "";
+  const depsHtml =
+    Array.isArray(item.dependencies) && item.dependencies.length
+      ? '<p class="ade-ext-deps">Dependencies: ' +
+        item.dependencies
+          .map((d) => "<code>" + escape(d) + "</code>")
+          .join(", ") +
+        "</p>"
+      : "";
+
+  const extHeaderTpl = await loadTmpl("extension/header.html");
+  const extHeaderHtml = tmpl(extHeaderTpl, {
+    name: escape(item.name || cleanPath),
+    typeTag: await typeTag(item._kind),
+    versionTag: versionTagHtml,
+    authorHtml,
+    sourceUrl: escape(sourceUrl(loc, data.tree, cleanPath)),
+    description: escape(item.description || ""),
+    depsHtml,
+  });
+
+  containerEl.innerHTML =
+    crumbsHtml +
+    '<div class="ade-ext-head">' +
+    extHeaderHtml +
+    "</div>" +
+    '<section id="ade-screenshots" aria-label="Screenshots" hidden></section>' +
+    '<section id="ade-readme" class="ade-readme" aria-label="README" hidden></section>' +
+    '<p id="ade-no-readme" class="ade-no-readme" hidden>No <code>README.md</code> for this extension.</p>';
+
+  const shots = containerEl.querySelector("#ade-screenshots");
+  const readme = containerEl.querySelector("#ade-readme");
+  const noReadme = containerEl.querySelector("#ade-no-readme");
+
+  const screenshots = findScreenshots(data.tree.paths, cleanPath);
+  if (screenshots.length) {
+    const urls = screenshots.map((p) => rawUrl(loc, data.tree, p));
+    initSlider(shots, urls);
+  }
+
+  const readmePath = _resolveReadmePath(data.tree.paths, cleanPath);
   if (!readmePath) {
     noReadme.hidden = false;
     return;
@@ -72,7 +116,7 @@ const _renderReadme = async (readme, noReadme, data, loc, extPath) => {
     return;
   }
   readme.hidden = false;
-  readme.innerHTML = renderMarkdown(md, loc, data.tree, extPath);
+  readme.innerHTML = renderMarkdown(md, loc, data.tree, cleanPath);
   readme.querySelectorAll("a[href]").forEach((a) => {
     const h = a.getAttribute("href") || "";
     if (/^https?:/i.test(h)) {
@@ -80,59 +124,4 @@ const _renderReadme = async (readme, noReadme, data, loc, extPath) => {
       a.setAttribute("rel", "noopener noreferrer");
     }
   });
-};
-
-const _resolveAuthor = async (data, loc, extPath) => {
-  const authorPath = extPath + "/author.json";
-  if (!hasFile(data.tree.paths, authorPath)) return data.pkg.author;
-  const override = await fetchJSON(loc, data.tree, authorPath);
-  return override || data.pkg.author;
-};
-
-export const renderExtension = async () => {
-  const params = new URLSearchParams(location.search);
-  const loc = await parseUrl(params.get("repo"));
-  const extPath = (params.get("path") || "").replace(/^\/+|\/+$/g, "");
-  const head = document.getElementById("ade-ext-head");
-  const crumbs = document.getElementById("ade-crumbs");
-  const shots = document.getElementById("ade-screenshots");
-  const readme = document.getElementById("ade-readme");
-  const noReadme = document.getElementById("ade-no-readme");
-  const err = document.getElementById("ade-error");
-  if (!loc || !extPath) {
-    head.innerHTML = "";
-    err.hidden = false;
-    err.textContent = "Missing or invalid ?repo= and ?path= parameters.";
-    return;
-  }
-  const data = await loadStore(loc);
-  if (!data) {
-    head.innerHTML = "";
-    err.hidden = false;
-    err.innerHTML =
-      "Could not load store <code>" + escape(loc.displayUrl) + "</code>.";
-    return;
-  }
-  const item = findItem(data.pkg, extPath);
-  if (!item) {
-    head.innerHTML = "";
-    err.hidden = false;
-    err.innerHTML =
-      "Extension <code>" +
-      escape(extPath) +
-      "</code> not found in <code>package.json</code>.";
-    return;
-  }
-  document.title = (item.name || extPath) + " — Awesome degoog extensions";
-  _renderCrumbs(crumbs, loc, data, item, extPath);
-  const author = await _resolveAuthor(data, loc, extPath);
-  _renderHead(head, loc, data.tree, item, extPath, author);
-
-  const screenshots = findScreenshots(data.tree.paths, extPath);
-  if (screenshots.length) {
-    const urls = screenshots.map((p) => rawUrl(loc, data.tree, p));
-    initSlider(shots, urls);
-    wireLightbox();
-  }
-  await _renderReadme(readme, noReadme, data, loc, extPath);
-};
+}

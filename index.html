@@ -17,119 +17,68 @@
         } catch (e) {}
       })();
     </script>
+    <link
+      rel="icon"
+      href="https://github.com/fccview/degoog/raw/main/src/public/images/degoog-logo.png"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
     />
-    <link rel="stylesheet" href="assets/libraries/bulma.min.css" />
     <link rel="stylesheet" href="assets/style.css" />
   </head>
-  <body data-page="index">
-    <section class="hero is-small">
-      <div class="hero-body">
-        <div class="container">
-          <h1 class="title is-3 mb-3">Awesome degoog extensions</h1>
-          <p class="subtitle is-6">
-            Community store repos for
-            <a href="https://github.com/fccview/degoog">degoog</a> &mdash;
-            plugins, themes, engines, and transports you can install in
-            <em>Settings &rarr; Store</em>.
-          </p>
-          <div class="field is-grouped">
-            <p class="control is-expanded">
-              <input
-                id="ade-filter"
-                class="input"
-                type="search"
-                placeholder="Filter stores..."
-                autocomplete="off"
-              />
-            </p>
-            <p class="control">
-              <button id="ade-refresh" type="button" class="button">
-                Refresh
-              </button>
-            </p>
+  <body>
+    <div class="ade-layout">
+      <header class="ade-mobile-header">
+        <button id="ade-burger" type="button" class="ade-btn">Menu</button>
+        <span class="ade-mobile-title">awesome-degoog-extensions</span>
+      </header>
+      <div class="ade-content">
+        <aside class="ade-sidebar">
+          <div class="ade-sidebar-brand">
+            <img
+              src="https://github.com/fccview/degoog/raw/main/src/public/images/degoog-logo.png"
+              alt="degoog logo"
+              class="ade-brand-img"
+              onerror="this.style.display = 'none'"
+            />
+            <a href="/" class="ade-brand-name">awesome-degoog-extensions</a>
           </div>
-        </div>
+          <div class="ade-sidebar-search">
+            <input
+              id="ade-search"
+              class="ade-input"
+              type="search"
+              placeholder="Search all extensions..."
+              autocomplete="off"
+            />
+          </div>
+          <nav id="ade-nav" class="ade-nav" aria-label="Stores"></nav>
+          <div class="ade-sidebar-actions">
+            <button id="ade-refresh" type="button" class="ade-btn">
+              <i class="fa-solid fa-arrows-rotate"></i>
+            </button>
+            <button id="ade-theme-toggle" type="button" class="ade-btn">
+              <i class="fa-solid fa-circle-half-stroke"></i>
+            </button>
+          </div>
+        </aside>
+        <main id="ade-main" class="ade-main"></main>
       </div>
-    </section>
-    <main class="section">
-      <div class="container">
-        <div id="ade-stores" class="columns is-multiline" aria-busy="true">
-          <template id="ade-skel-tmpl">
-            <div class="column is-one-third-desktop is-half-tablet">
-              <div class="card ade-card ade-card-skeleton">
-                <div class="card-content">
-                  <div class="media mb-3">
-                    <div class="media-left">
-                      <div class="ade-skeleton-block ade-card-img"></div>
-                    </div>
-                    <div class="media-content" style="overflow: hidden">
-                      <p
-                        class="ade-skeleton-line"
-                        style="width: 72%; height: 14px; margin-bottom: 8px"
-                      ></p>
-                      <p
-                        class="ade-skeleton-line ade-skeleton-line-short"
-                        style="height: 11px"
-                      ></p>
-                    </div>
-                  </div>
-                  <p class="ade-skeleton-line" style="height: 11px"></p>
-                  <p
-                    class="ade-skeleton-line ade-skeleton-line-short"
-                    style="height: 11px; margin-bottom: 0"
-                  ></p>
-                  <div class="ade-card-meta tags" style="padding-top: 12px">
-                    <span
-                      class="ade-skeleton-block"
-                      style="
-                        width: 72px;
-                        height: 22px;
-                        border-radius: 999px;
-                        display: inline-block;
-                      "
-                    ></span>
-                    <span
-                      class="ade-skeleton-block"
-                      style="
-                        width: 60px;
-                        height: 22px;
-                        border-radius: 999px;
-                        display: inline-block;
-                        margin-left: 4px;
-                      "
-                    ></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </template>
-          <script>
-            (function () {
-              var t = document.getElementById("ade-skel-tmpl");
-              var g = t.parentElement;
-              for (var i = 0; i < 6; i++)
-                g.appendChild(t.content.cloneNode(true));
-              g.removeChild(t);
-            })();
-          </script>
-        </div>
-      </div>
-    </main>
-    <footer class="footer">
-      <div class="container has-text-centered has-text-grey">
-        <p>
-          Want your store listed?
-          <a href="https://github.com/fccview/awesome-degoog-extensions"
-            >Open a PR adding it to <code>stores.json</code></a
-          >.
-        </p>
-      </div>
-    </footer>
+      <div id="ade-backdrop" class="ade-backdrop"></div>
+    </div>
+    <dialog id="ade-lightbox" class="ade-lightbox">
+      <button type="button" class="ade-lightbox-close" aria-label="Close">
+        &times;
+      </button>
+      <img alt="" />
+    </dialog>
     <script src="assets/libraries/marked.min.js"></script>
     <script type="module" src="assets/js/main.js"></script>
   </body>

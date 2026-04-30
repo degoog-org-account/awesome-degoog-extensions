@@ -22,21 +22,21 @@ const _remaining = () =>
 
 export const wireRefresh = (btn) => {
   if (!btn) return;
-  const baseLabel = btn.textContent || "Refresh";
+  const baseLabel = '<i class="fa-solid fa-rotate"></i>';
   let timer = null;
   const tick = () => {
     const ms = _remaining();
     if (ms > 0) {
       btn.disabled = true;
-      btn.textContent = baseLabel + " (" + Math.ceil(ms / 1000) + "s)";
+      btn.innerHTML = baseLabel + " (" + Math.ceil(ms / 1000) + "s)";
       btn.setAttribute(
         "title",
-        "Cool down to avoid hitting upstream API rate limits."
+        "Cool down to avoid hitting upstream API rate limits.",
       );
       timer = setTimeout(tick, 1000);
     } else {
       btn.disabled = false;
-      btn.textContent = baseLabel;
+      btn.innerHTML = baseLabel;
       btn.removeAttribute("title");
       timer = null;
     }

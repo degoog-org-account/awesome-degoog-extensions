@@ -1,0 +1,38 @@
+:root {
+  --ade-border-w: 0.0625rem;
+
+  --ade-space-1: 0.0625rem;
+  --ade-space-2: 0.125rem;
+  --ade-space-3: 0.1875rem;
+  --ade-space-4: 0.25rem;
+  --ade-space-5: 0.3125rem;
+  --ade-space-6: 0.375rem;
+  --ade-space-8: 0.5rem;
+  --ade-space-10: 0.625rem;
+  --ade-space-11: 0.6875rem;
+  --ade-space-12: 0.75rem;
+  --ade-space-14: 0.875rem;
+  --ade-space-16: 1rem;
+  --ade-space-18: 1.125rem;
+  --ade-space-20: 1.25rem;
+  --ade-space-22: 1.375rem;
+  --ade-space-24: 1.5rem;
+  --ade-space-28: 1.75rem;
+  --ade-space-32: 2rem;
+  --ade-space-40: 2.5rem;
+  --ade-space-44: 2.75rem;
+  --ade-space-56: 3.5rem;
+  --ade-space-60: 3.75rem;
+  --ade-space-72: 4.5rem;
+
+  --ade-font-11: 0.6875rem;
+  --ade-font-12: 0.75rem;
+  --ade-font-13: 0.8125rem;
+  --ade-font-14: 0.875rem;
+  --ade-font-18: 1.125rem;
+  --ade-font-22: 1.375rem;
+  --ade-font-28: 1.75rem;
+  --ade-font-32: 2rem;
+
+  --ade-sidebar-width: 18.75rem;
+}

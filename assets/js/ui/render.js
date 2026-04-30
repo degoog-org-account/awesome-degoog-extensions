@@ -1,4 +1,5 @@
 import { TYPE_SINGULAR } from "../utils/config.js";
+import { tmpl, loadTmpl } from "../utils/tmpl.js";
 
 export const escape = (s) => {
   const d = document.createElement("div");
@@ -10,38 +11,31 @@ export const stripGit = (s) => s.replace(/\.git$/i, "").replace(/\/+$/, "");
 
 export const hasFile = (treePaths, p) => treePaths.indexOf(p) >= 0;
 
-export const typeTag = (kind) => {
+export const typeTag = async (kind) => {
   const t = TYPE_SINGULAR[kind] || kind;
-  return (
-    '<span class="tag is-rounded ade-tag-' +
-    escape(t) +
-    '">' +
-    escape(t) +
-    "</span>"
-  );
+  const tpl = await loadTmpl("common/type-tag.html");
+  return tmpl(tpl, { type: escape(t) });
 };
 
 export const authorMarkup = (author) => {
   if (!author) return "";
   if (typeof author === "string")
-    return '<span class="has-text-grey">by ' + escape(author) + "</span>";
+    return '<span class="ade-author">by ' + escape(author) + "</span>";
   const name = escape(author.name || "");
   if (author.url) {
     return (
-      '<span class="has-text-grey">by <a href="' +
+      '<span class="ade-author">by <a href="' +
       escape(author.url) +
       '" target="_blank" rel="noopener">' +
       name +
       "</a></span>"
     );
   }
-  return '<span class="has-text-grey">by ' + name + "</span>";
+  return '<span class="ade-author">by ' + name + "</span>";
 };
 
 export const hostBadge = (host) =>
-  '<span class="tag is-light is-small ade-host-badge">' +
-  escape(host) +
-  "</span>";
+  '<span class="ade-host-badge">' + escape(host) + "</span>";
 
 const _hashHue = (s) => {
   let h = 0;
@@ -59,23 +53,19 @@ const _firstLetter = (s) => {
   return /[A-Z0-9]/.test(ch) ? ch : "?";
 };
 
-export const renderAvatar = ({ src, label, sizeClass }) => {
+export const renderAvatar = async ({ src, label, sizeClass }) => {
   const letter = _firstLetter(label);
   const hue = _hashHue(label || "");
   const inner = src
     ? '<img src="' +
-    escape(src) +
-    '" alt="" loading="lazy" onerror="this.remove()">'
+      escape(src) +
+      '" alt="" loading="lazy" onerror="this.remove()">'
     : "";
-  return (
-    '<span class="ade-avatar ' +
-    sizeClass +
-    '" style="--ade-h:' +
-    hue +
-    '" data-letter="' +
-    escape(letter) +
-    '">' +
-    inner +
-    "</span>"
-  );
+  const tpl = await loadTmpl("common/avatar.html");
+  return tmpl(tpl, {
+    sizeClass: escape(sizeClass || ""),
+    hue: String(hue),
+    letter: escape(letter),
+    inner,
+  });
 };

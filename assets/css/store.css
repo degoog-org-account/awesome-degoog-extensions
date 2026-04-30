@@ -1,0 +1,88 @@
+.ade-store-head {
+  margin-bottom: 1.25rem;
+}
+
+.ade-store-head-media {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ade-space-16);
+  margin-bottom: 1rem;
+}
+
+.ade-store-head-content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ade-store-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: var(--ade-space-4);
+}
+
+.ade-store-meta {
+  font-size: var(--ade-font-13);
+  color: var(--ade-text-muted);
+  margin-bottom: var(--ade-space-6);
+}
+
+.ade-store-meta a {
+  color: var(--ade-text-muted);
+}
+
+.ade-store-meta a:hover {
+  color: var(--ade-text);
+}
+
+.ade-store-desc {
+  font-size: var(--ade-font-13);
+  color: var(--ade-text-muted);
+}
+
+.ade-store-git {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: var(--ade-border-w) solid var(--ade-border);
+  overflow: hidden;
+}
+
+.ade-git-label {
+  padding: var(--ade-space-5) var(--ade-space-10);
+  background: var(--ade-sidebar-bg);
+  border-right: var(--ade-border-w) solid var(--ade-border);
+  font-size: var(--ade-font-12);
+  color: var(--ade-text-muted);
+  flex-shrink: 0;
+}
+
+.ade-git-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--ade-space-5) var(--ade-space-8);
+  border: none;
+  background: var(--ade-surface);
+  color: var(--ade-text);
+  font-size: var(--ade-font-12);
+  font-family: monospace;
+  outline: none;
+  text-overflow: ellipsis;
+}
+
+.ade-store-git .ade-btn {
+  border: none;
+  border-left: var(--ade-border-w) solid var(--ade-border);
+  flex-shrink: 0;
+}
+
+.ade-store-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--ade-space-10);
+  margin-bottom: 1rem;
+}
+
+.ade-store-controls .ade-input {
+  flex: 1 1 auto;
+  min-width: 0;
+}

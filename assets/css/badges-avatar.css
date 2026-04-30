@@ -1,0 +1,56 @@
+.ade-tag {
+  font-size: var(--ade-font-11);
+  padding: var(--ade-space-1) var(--ade-space-6);
+  border: var(--ade-border-w) solid currentColor;
+  vertical-align: middle;
+  font-weight: 500;
+  text-transform: lowercase;
+  display: inline-block;
+}
+
+.ade-avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: hsl(var(--ade-h, 220) 50% 45%);
+  color: #fff;
+  font-weight: 700;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.ade-avatar::before {
+  content: attr(data-letter);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.02em;
+}
+
+.ade-avatar img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ade-card-img {
+  width: var(--ade-space-44);
+  height: var(--ade-space-44);
+  font-size: var(--ade-font-18);
+}
+
+.ade-store-img {
+  width: var(--ade-space-72);
+  height: var(--ade-space-72);
+  font-size: var(--ade-font-28);
+}

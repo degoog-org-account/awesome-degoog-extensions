@@ -33,10 +33,8 @@ export const wireCopyButtons = () => {
         btn.setAttribute("data-orig", btn.textContent);
       const orig = btn.getAttribute("data-orig");
       btn.textContent = ok ? "Copied" : "Failed";
-      btn.classList.add(ok ? "is-success" : "is-danger");
       setTimeout(() => {
         btn.textContent = orig;
-        btn.classList.remove("is-success", "is-danger");
       }, 1500);
     });
   });

@@ -1,0 +1,43 @@
+.ade-btn {
+  display: inline-block;
+  padding: var(--ade-space-5) var(--ade-space-12);
+  background: var(--ade-surface);
+  border: var(--ade-border-w) solid var(--ade-border);
+  color: var(--ade-text);
+  font-size: var(--ade-font-13);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.ade-btn:hover {
+  background: var(--ade-hover-bg);
+}
+
+.ade-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ade-btn-burger {
+  order: 2;
+}
+
+.ade-input {
+  display: block;
+  width: 100%;
+  padding: var(--ade-space-5) var(--ade-space-8);
+  background: var(--ade-surface);
+  border: var(--ade-border-w) solid var(--ade-border);
+  color: var(--ade-text);
+  font-size: var(--ade-font-13);
+  font-family: inherit;
+  outline: none;
+}
+
+.ade-input:focus {
+  border-color: var(--ade-text-muted);
+}
+
+.ade-input::placeholder {
+  color: var(--ade-text-muted);
+}

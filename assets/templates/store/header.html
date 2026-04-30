@@ -1,0 +1,26 @@
+<div class="ade-store-head">
+  <div class="ade-store-head-media">
+    {{ avatar }}
+    <div class="ade-store-head-content">
+      <h2 class="ade-store-title">{{ name }}</h2>
+      <p class="ade-store-meta">
+        <a href="{{ webUrl }}" target="_blank" rel="noopener"
+          >{{ displayUrl }}</a
+        >{{ authorHtml }}
+      </p>
+      <p class="ade-store-desc">{{ description }}</p>
+    </div>
+  </div>
+  <div class="ade-store-git">
+    <span class="ade-git-label">git</span
+    ><input
+      class="ade-git-input"
+      type="text"
+      readonly
+      value="{{ gitUrl }}"
+      onclick="this.select()"
+    /><button type="button" class="ade-btn" data-copy="{{ gitUrl }}">
+      Copy
+    </button>
+  </div>
+</div>

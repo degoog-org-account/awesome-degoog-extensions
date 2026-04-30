@@ -1,0 +1,52 @@
+html[data-theme="light"] {
+  --ade-bg: #f5f3ef;
+  --ade-surface: #ffffff;
+  --ade-sidebar-bg: #ece9e2;
+  --ade-border: #d4d0c8;
+  --ade-text: #1b1a17;
+  --ade-text-muted: #6b6860;
+  --ade-active-bg: #dedad0;
+  --ade-hover-bg: #e5e2d8;
+}
+
+html[data-theme="dark"] {
+  --ade-bg: #0f0e0d;
+  --ade-surface: #171614;
+  --ade-sidebar-bg: #131210;
+  --ade-border: #2c2b27;
+  --ade-text: #e2dfd6;
+  --ade-text-muted: #857f74;
+  --ade-active-bg: #252420;
+  --ade-hover-bg: #1e1d1b;
+}
+
+html[data-theme="light"] .ade-tag-plugin {
+  color: hsl(175, 45%, 40%);
+}
+html[data-theme="dark"] .ade-tag-plugin {
+  color: hsl(175, 50%, 58%);
+}
+html[data-theme="light"] .ade-tag-theme {
+  color: hsl(15, 55%, 45%);
+}
+html[data-theme="dark"] .ade-tag-theme {
+  color: hsl(15, 60%, 62%);
+}
+html[data-theme="light"] .ade-tag-engine {
+  color: hsl(90, 38%, 38%);
+}
+html[data-theme="dark"] .ade-tag-engine {
+  color: hsl(90, 42%, 56%);
+}
+html[data-theme="light"] .ade-tag-transport {
+  color: hsl(40, 65%, 40%);
+}
+html[data-theme="dark"] .ade-tag-transport {
+  color: hsl(40, 70%, 58%);
+}
+html[data-theme="light"] .ade-tag-version {
+  color: var(--ade-text-muted);
+}
+html[data-theme="dark"] .ade-tag-version {
+  color: var(--ade-text-muted);
+}

@@ -1,54 +1,78 @@
+import { loadStore, rawUrl } from "../utils/api.js";
 import { parseUrl } from "../utils/url.js";
-import { fetchStores, loadStore } from "../utils/api.js";
-import {
-  renderStoreCard,
-  renderBrokenCard,
-  renderSkeletonCard,
-} from "../ui/cards.js";
-import { wireFilter } from "../ui/filter.js";
-import { wireRefresh } from "../ui/refresh.js";
+import { itemsAll } from "../utils/items.js";
+import { escape, renderAvatar } from "../ui/render.js";
+import { tmpl, loadTmpl } from "../utils/tmpl.js";
 
-const _slotHtml = (i) =>
-  '<div class="column is-one-third-desktop is-half-tablet" data-slot="' +
-  i +
-  '">' +
-  renderSkeletonCard() +
-  "</div>";
+const _nav = () => document.getElementById("ade-nav");
 
-const _renderSlot = async (grid, raw, i) => {
-  const slot = grid.querySelector('[data-slot="' + i + '"]');
-  if (!slot) return;
-  const loc = await parseUrl(raw);
-  if (!loc) {
-    slot.innerHTML = renderBrokenCard(
-      String(raw),
-      "Unsupported host. Add a fetcher in ./js/utils/fetchers.js to support it."
-    );
-    return;
-  }
-  const data = await loadStore(loc);
-  if (!data) {
-    slot.innerHTML = renderBrokenCard(
-      loc.displayUrl,
-      "Repo unreachable, private, or missing root package.json."
-    );
-    return;
-  }
-  slot.innerHTML = renderStoreCard(data.loc, data.pkg, data.tree);
-};
+const _skelId = (i) => "ade-nav-skel-" + i;
 
-export const renderIndex = async () => {
-  const grid = document.getElementById("ade-stores");
-  wireRefresh(document.getElementById("ade-refresh"));
-  const inputs = await fetchStores();
-  if (!inputs.length) {
-    grid.innerHTML =
-      '<div class="column"><div class="notification is-warning is-light">No stores listed yet. Be the first &mdash; open a PR adding one to <code>stores.json</code>.</div></div>';
-    grid.setAttribute("aria-busy", "false");
-    return;
-  }
-  grid.innerHTML = inputs.map((_raw, i) => _slotHtml(i)).join("");
-  grid.setAttribute("aria-busy", "false");
-  await Promise.all(inputs.map((raw, i) => _renderSlot(grid, raw, i)));
-  wireFilter("ade-filter", "ade-stores");
-};
+async function _insertSkel(i) {
+  const nav = _nav();
+  if (!nav) return;
+  const skelTpl = await loadTmpl("sidebar/nav-item-skel.html");
+  const div = document.createElement("div");
+  div.id = _skelId(i);
+  div.innerHTML = skelTpl;
+  nav.appendChild(div);
+}
+
+function _replaceSkel(i, html) {
+  const el = document.getElementById(_skelId(i));
+  if (!el) return;
+  el.outerHTML = html;
+}
+
+export async function loadSidebar(inputs, onStoreLoadedFn) {
+  await Promise.all(inputs.map((_u, i) => _insertSkel(i)));
+  await Promise.all(
+    inputs.map(async (raw, i) => {
+      const loc = await parseUrl(raw);
+      if (!loc) {
+        _replaceSkel(i, "");
+        return;
+      }
+      const data = await loadStore(loc);
+      if (!data) {
+        _replaceSkel(i, "");
+        return;
+      }
+      const navItemTpl = await loadTmpl("sidebar/nav-item.html");
+      const storeName = escape(data.pkg.name || loc.path);
+      const href = "#repo=" + encodeURIComponent(raw);
+      const repoImg = (() => {
+        const img = data.pkg["repo-image"];
+        if (!img) return "";
+        if (/^https?:\/\/|^data:|^\/\//i.test(img)) return img;
+        return rawUrl(loc, data.tree, img.replace(/^\.?\/+/, ""));
+      })();
+      const avatarHtml = await renderAvatar({
+        src: repoImg,
+        label: data.pkg.name || loc.path,
+        sizeClass: "ade-nav-img",
+      });
+      const html = tmpl(navItemTpl, {
+        href,
+        repo: escape(String(raw)),
+        name: storeName,
+        path: escape(loc.displayUrl),
+        avatar: avatarHtml,
+      });
+      _replaceSkel(i, html);
+      const items = itemsAll(data.pkg);
+      onStoreLoadedFn(raw, data.pkg.name || loc.path, items);
+    }),
+  );
+}
+
+export function setActiveNav(repoInput) {
+  document.querySelectorAll(".ade-nav-item").forEach((el) => {
+    el.classList.remove("ade-nav-active");
+  });
+  if (!repoInput) return;
+  const target = document.querySelector(
+    '.ade-nav-item[data-repo="' + CSS.escape(String(repoInput)) + '"]',
+  );
+  if (target) target.classList.add("ade-nav-active");
+}

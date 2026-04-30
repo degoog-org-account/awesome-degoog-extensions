@@ -1,0 +1,23 @@
+body {
+  font-family: "Inter", Arial, sans-serif;
+  background: var(--ade-bg);
+  color: var(--ade-text);
+  font-size: var(--ade-font-14);
+  line-height: 1.5;
+}
+
+a {
+  color: var(--ade-text);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+code {
+  font-family: monospace;
+  background: var(--ade-surface);
+  border: var(--ade-border-w) solid var(--ade-border);
+  padding: var(--ade-space-1) var(--ade-space-4);
+  font-size: var(--ade-font-12);
+}
