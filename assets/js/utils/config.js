@@ -12,6 +12,7 @@ export const TYPES = [
   "engines",
   "transports",
   "autocomplete",
+  "shortcuts",
 ];
 
 export const TYPE_LABELS = {
@@ -20,6 +21,7 @@ export const TYPE_LABELS = {
   engines: "Engines",
   transports: "Transports",
   autocomplete: "Autocomplete",
+  shortcuts: "Shortcuts",
 };
 
 export const TYPE_SINGULAR = {
@@ -28,6 +30,7 @@ export const TYPE_SINGULAR = {
   engines: "engine",
   transports: "transport",
   autocomplete: "autocomplete",
+  shortcuts: "shortcut"
 };
 
 export const IMG_EXT = /\.(png|jpe?g|gif|webp|avif|svg)$/i;
